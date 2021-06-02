@@ -7,6 +7,11 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="8696a1dd-cb96-4a9f-9f4a-217f0654b18f" >
 		<http:listener-connection host="0.0.0.0" port="8091" />
 	</http:listener-config>
+	<flow name="uriParams" doc:id="490d53a0-766f-44c6-bec7-422db84ddbc3" >
+		<http:listener doc:name="Listener" doc:id="6a85da5c-ab34-4988-9bf0-d597ad89fcfd" config-ref="HTTP_Listener_config" path="/uri/{uname}"/>
+		<set-payload value="#['Hello ' ++ attributes.uriParams.uname as String]" doc:name="Set Payload" doc:id="e3ae11ea-13ec-4c1c-b0a8-e32e7b080ce8" />
+		<logger level="INFO" doc:name="Logger" doc:id="708d07bb-5653-471f-849e-9d35074e2fe8" message="#[payload]"/>
+	</flow>
 	<flow name="queryParams" doc:id="011fc5a8-1760-4e6e-adc9-792bd11bb6fd" >
 		<http:listener doc:name="Listener" doc:id="c104a1a8-98c1-4187-8128-8db9a00d6adf" config-ref="HTTP_Listener_config" path="demo1"/>
 		<set-payload value="#['Hello ' ++ message.attributes.queryParams.uname as String]" doc:name="Set Payload" doc:id="a8c7c1c9-d9d3-4572-943c-fe2a44002ee4" />
