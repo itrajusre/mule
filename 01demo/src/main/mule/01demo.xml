@@ -7,9 +7,11 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="8696a1dd-cb96-4a9f-9f4a-217f0654b18f" >
 		<http:listener-connection host="0.0.0.0" port="8091" />
 	</http:listener-config>
-	
-	
-	
+	<flow name="queryParams" doc:id="011fc5a8-1760-4e6e-adc9-792bd11bb6fd" >
+		<http:listener doc:name="Listener" doc:id="c104a1a8-98c1-4187-8128-8db9a00d6adf" config-ref="HTTP_Listener_config" path="demo1"/>
+		<set-payload value="#['Hello ' ++ message.attributes.queryParams.uname as String]" doc:name="Set Payload" doc:id="a8c7c1c9-d9d3-4572-943c-fe2a44002ee4" />
+		<logger level="INFO" doc:name="Logger" doc:id="2d481e01-f046-41ff-8c71-fcc4021a3b23" message="#[payload]"/>
+	</flow>
 	<flow name="Demo" doc:id="acd3e343-1270-4f38-a0fc-cb3cb62b7b1e" >
 		<http:listener doc:name="Listener" doc:id="f737051a-9b2d-4f2a-a1e2-60f251e45b9d" config-ref="HTTP_Listener_config" path="demo"/>
 		<set-payload value="Hello World!!!" doc:name="Set Payload" doc:id="96a83dbb-8715-449a-b7fc-e2353c84926a" />
