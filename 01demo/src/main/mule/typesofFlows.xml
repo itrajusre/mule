@@ -1,5 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd"></mule>
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<http:listener-config name="HTTP_Listener_config1" doc:name="HTTP Listener config" doc:id="9700e6a5-a82b-43e6-9ac8-19d5c1c7239b" >
+		<http:listener-connection host="0.0.0.0" port="8092" />
+	</http:listener-config>
+	<flow name="Flow1" doc:id="426abe37-54cf-4fd9-b7e6-0fd40586dd10" >
+		<http:listener doc:name="Listener" doc:id="c813c657-c8e1-4280-a38d-be857dcb3138" config-ref="HTTP_Listener_config1" path="/flow1"/>
+		<set-payload value="Flow1 Started" doc:name="Flow1 Started" doc:id="b1cce211-a279-448a-ba56-d191258a9963" />
+		<logger level="INFO" doc:name="Logger" doc:id="54e5369a-f68d-40af-8e70-17ba1708cff9" message="#[payload]"/>
+		<flow-ref doc:name="Flow Reference" doc:id="27dcc451-7ccf-45a6-a040-8000d6106833" name="Flow2"/>
+		<set-payload value="Flow1 Stopped" doc:name="Flow1 Stopped" doc:id="472d7f59-bc27-4614-9fc9-079be5e8b97b" />
+		<logger level="INFO" doc:name="Logger" doc:id="f93ec4a3-2c61-4b13-aa5a-8518899b6699" message="#[payload]"/>
+	</flow>
+	<flow name="Flow2" doc:id="a5b1cd58-8ca9-4f15-9dfb-670f7ffd3c64" >
+		<http:listener doc:name="Listener" doc:id="3cac3e44-e8e3-4aa8-b2eb-d4f3300d12dd" config-ref="HTTP_Listener_config1" path="/flow2" />
+		<set-payload value="Flow2 Started" doc:name="Flow2 Started" doc:id="c8472920-e5fd-47ac-b691-62ded2155b26" />
+		<logger level="INFO" doc:name="Logger" doc:id="3d46250b-e602-47d8-9a1e-7bde7c553e34" message="#[payload]" />
+		<flow-ref doc:name="Subflow" doc:id="e0b433be-f8b6-4fd9-9956-722fd2d8f8da" name="Sub_Flow"/>
+		<set-payload value="Flow2 Stopped" doc:name="Flow2 Stopped" doc:id="98e8712b-2b8b-4fce-984c-b240f484496d" />
+		<logger level="INFO" doc:name="Logger" doc:id="cde81315-2b36-4f74-9650-dba1eb29344e" message="#[payload]" />
+	</flow>
+	<sub-flow name="Sub_Flow" doc:id="90ab18f5-2c25-4b6e-a924-232b3683a525" >
+		<set-payload value="Subflow started" doc:name="Subflow started" doc:id="fc3a00f3-6737-4895-b045-692796f20064" />
+		<logger level="INFO" doc:name="Logger" doc:id="3efbdc48-cca4-449c-9142-0d10b1c735b5" message="#[payload]"/>
+		<set-payload value="Subflow stopped" doc:name="Subflow stopped" doc:id="46eb0ccb-f35f-434a-884c-adebe5008c6e" />
+		<logger level="INFO" doc:name="Logger" doc:id="c8c0896b-a4f0-401b-b38d-9399da608b7c" message="#[payload]"/>
+	</sub-flow>
+</mule>
