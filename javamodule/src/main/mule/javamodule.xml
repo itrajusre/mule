@@ -1,5 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd"></mule>
+<mule xmlns:java="http://www.mulesoft.org/schema/mule/java" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/java/current/mule-java.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="a18a4d15-cfb5-4d43-87c7-61dffedc23f9" >
+		<http:listener-connection host="0.0.0.0" port="8091" />
+	</http:listener-config>
+	<flow name="nonstatic" doc:id="d22e86a7-1e65-45d3-b372-afe4ecd2822f" >
+		<http:listener doc:name="Listener" doc:id="524c4429-20e2-4092-a312-feb4a0ebae07" config-ref="HTTP_Listener_config" path="/nonstatic"/>
+		<java:new doc:name="New" doc:id="a33878c5-c243-41c5-be2c-1817d1f604d9" class="com.itraju.StockQuoteService" constructor="StockQuoteService()" target="sqs"/>
+		<java:invoke doc:name="Invoke" doc:id="f0da2c84-3550-4a4c-8062-9a18a286c046" instance="#[vars.sqs]" class="com.itraju.StockQuoteService" method="getStockPrice(java.lang.String)">
+			<java:args ><![CDATA[#[%dw 2.0
+output application/java
+---
+{
+	stockSymbol: attributes.queryParams.stock as String
+}]]]></java:args>
+		</java:invoke>
+	</flow>
+	<flow name="StasticMethod" doc:id="88565572-d7f2-4456-8992-c0653ec14f56" >
+		<http:listener doc:name="Listener" doc:id="e5e51978-a3f5-46a2-beaa-84942db8b911" config-ref="HTTP_Listener_config" path="/static"/>
+		<java:invoke-static method="sayHello(java.lang.String,java.lang.String)" doc:name="Invoke static" doc:id="596869d3-529e-40e0-af8a-21912f8be427" class="com.itraju.StockQuoteService">
+			<java:args ><![CDATA[#[%dw 2.0
+output application/java
+---
+{
+	name: attributes.queryParams.name as String,
+	city: attributes.queryParams.city as String
+}]]]></java:args>
+		</java:invoke-static>
+	</flow>
+</mule>
